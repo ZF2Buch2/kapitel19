@@ -1,0 +1,88 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.4 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.4');
+$this->pageTitle('Listing 19.4');
+?>
+<h3><code>CommentService</code> verwendet Konfigurationsparameter</h3>
+<pre>
+&lt;?php 
+namespace Comment\Service;
+
+[...]
+
+class CommentService implements EventManagerAwareInterface, CommentServiceInterface
+{
+    [...]
+    
+    protected $config = array();
+    
+    public function __construct(CommentTableInterface $table, array $config)
+    {
+        $this->setTable($table);
+        $this->setConfig($config);
+    }
+    
+    [...]
+    
+    public function getConfig($key)
+    {
+        if (!isset($this->config[$key])) {
+            return null;
+        }
+        return $this->config[$key];
+    }
+    
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+        return $this;
+    }
+    
+    [...]
+    
+    public function save(array $data, $id = null)
+    {
+        [...]
+            
+        if ($mode == 'create') {
+            // get status
+            $newStatus = $this->getConfig('newStatus');
+            
+            // set values
+            $comment->setCdate(date('Y-m-d H:i:s'));
+            $comment->setStatus($newStatus);
+        }
+        
+        [...]
+                
+        // set success message
+        if ($mode == 'create' && $newStatus != 'approved') {
+            $this->setMessage('Der Kommentar wartet auf Freischaltung!');
+        } else {
+            $this->setMessage('Kommentar wurde gespeichert!');
+        }
+        
+        [...]
+    }
+    
+    [...]
+}
+</pre>

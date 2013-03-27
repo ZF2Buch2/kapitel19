@@ -1,0 +1,68 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch 'Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung'
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.8 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.8');
+$this->pageTitle('Listing 19.8');
+?>
+<h3><code>CommentShowComments</code> View-Helper für Kommentare und Formular</h3>
+<pre>
+&lt;?php
+namespace Comment\View\Helper;
+
+use Comment\Service\CommentServiceInterface;
+use Zend\View\Helper\AbstractHelper;
+use Zend\View\Model\ViewModel;
+
+class CommentShowComments extends AbstractHelper
+{
+    protected $commentService;
+
+    public function __construct(CommentServiceInterface $commentService)
+    {
+        $this->setCommentService($commentService);
+    }
+
+    public function setCommentService(CommentServiceInterface $commentService = null)
+    {
+        $this->commentService = $commentService;
+        return $this;
+    }
+    
+    public function getCommentService()
+    {
+        return $this->commentService;
+    }
+    
+    public function __invoke($url)
+    {
+        $commentForm = $this->getCommentService()->getForm('create');
+        $commentForm->$form->setAttribute('action', $url);
+        
+        // configure view model
+        $vm = new ViewModel(array(
+            'commentList' => $this->getCommentService()->fetchListByUrl($url),
+            'commentForm' => $commentForm,
+        ));
+        $vm->setTemplate('widget/comments');
+        
+        return $this->getView()->render($vm);
+    }
+}
+</pre>

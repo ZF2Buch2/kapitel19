@@ -1,0 +1,98 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.13 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.13');
+$this->pageTitle('Listing 19.13');
+?>
+<h3>Geänderter <code>CommentService</code> zum Speichern des Formular-Objekts</h3>
+<pre>
+&lt;?php
+namespace Comment\Service;
+
+[...]
+use Zend\Session\Container;
+    
+class CommentService implements EventManagerAwareInterface, CommentServiceInterface
+{
+    const NAMESPACE_DEFAULT = 'Comment_Session';
+    
+    [...]
+    
+    public function prepareCreateForm($url)
+    {
+        // get session container
+        $namespace = new Container(self::NAMESPACE_DEFAULT);
+        
+        // check for form data
+        if ($namespace->createForm) {
+            // configure comment form
+            $commentForm = $this->getForm('create');
+            $commentForm->setData($namespace->createForm);
+            $commentForm->isValid();
+            
+            // destroy form data
+            $namespace->createForm = null;
+            
+        } else {
+            // configure comment form
+            $commentForm = $this->getForm('create');
+            $commentForm->get('url')->setValue($url);
+        }
+        
+        return $commentForm;
+    }
+
+    [...]
+    
+    public function save(array $data, $id = null)
+    {
+        $namespace = new Container(self::NAMESPACE_DEFAULT);
+        
+        [...]
+        
+        // check for invalid data
+        if (!$form->isValid()) {
+            $this->setMessage('Bitte Eingaben überprüfen!');
+            
+            $namespace->createForm = $data;
+            
+            return false;
+        }
+        
+        [...]
+        
+        try {
+            [...]
+        } catch (InvalidQueryException $e) {
+            $this->setMessage('Kommentar konnte nicht gespeichert werden!');
+            
+            $namespace->createForm = $data;
+            
+            return false;
+        }
+
+        $namespace->createForm = null;
+        
+        [...]
+    }
+    
+    [...]
+}
+</pre>

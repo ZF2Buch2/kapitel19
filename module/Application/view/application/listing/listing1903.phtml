@@ -1,0 +1,42 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.3 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.3');
+$this->pageTitle('Listing 19.3');
+?>
+<h3>Factory-Klasse übergibt Konfigurationsparameter an <code>CommentService</code></h3>
+<pre>
+&lt;?php 
+namespace Comment\Service;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+class CommentServiceFactory implements FactoryInterface
+{
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $table   = $serviceLocator->get('Comment\Table\Comment');
+        $config  = $serviceLocator->get('Config');
+        $service = new CommentService($table, $config['comment']);
+        return $service;
+    }
+}
+</pre>

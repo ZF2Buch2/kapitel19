@@ -1,0 +1,64 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.6 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.6');
+$this->pageTitle('Listing 19.6');
+?>
+<h3><code>CommentShowLinks</code> View-Helper zur Ausgabe von Zähler und Links</h3>
+<pre>
+&lt;?php
+namespace Comment\View\Helper;
+
+use Comment\Service\CommentServiceInterface;
+use Zend\View\Helper\AbstractHelper;
+use Zend\View\Model\ViewModel;
+
+class CommentShowLinks extends AbstractHelper
+{
+    protected $commentService;
+
+    public function __construct(CommentServiceInterface $commentService)
+    {
+        $this->setCommentService($commentService);
+    }
+
+    public function setCommentService(CommentServiceInterface $commentService = null)
+    {
+        $this->commentService = $commentService;
+        return $this;
+    }
+    
+    public function getCommentService()
+    {
+        return $this->commentService;
+    }
+    
+    public function __invoke($url)
+    {
+        $vm = new ViewModel(array(
+            'commentUrl'   => $url,
+            'commentCount' => $this->getCommentService()->fetchCountByUrl($url)
+        ));
+        $vm->setTemplate('widget/links');
+        
+        return $this->getView()->render($vm);
+    }
+}
+</pre>

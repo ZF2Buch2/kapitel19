@@ -1,0 +1,72 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.9 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.9');
+$this->pageTitle('Listing 19.9');
+?>
+<h3>View-Skript <code>comments.phtml</code> gibt Kommentare und Formular aus</h3>
+<pre>
+&lt;?php
+use Zend\View\Helper\Gravatar;
+
+$this-&gt;headScript()-&gt;appendFile(
+    $this-&gt;basePath() . '/js/ckeditor/ckeditor.js', 'text/javascript'
+);
+?&gt;
+&lt;hr /&gt;
+&lt;div id="comments"&gt;
+&lt;h3&gt;Kommentare&lt;/h3&gt;
+&lt;?php if ($this-&gt;commentList-&gt;count() &gt; 0) :?&gt;
+&lt;?php foreach($this-&gt;commentList as $comment) :   ?&gt;
+&lt;hr /&gt;
+&lt;div class="pull-left"&gt;
+&lt;?php 
+    echo $this-&gt;gravatar(
+        $comment-&gt;getEmail(), 
+        array('imgSize' =&gt; 50, 'defaultImg' =&gt; Gravatar::DEFAULT_IDENTICON), 
+        array('class' =&gt; 'gravatar', 'title' =&gt; $comment-&gt;getName())
+    );
+?&gt;
+&lt;/div&gt;
+&lt;blockquote id="comment-&lt;?php echo $comment-&gt;getId(); ?&gt;"&gt;
+&lt;?php echo $comment-&gt;getMessage();?&gt;
+&lt;small&gt;
+&lt;i class="icon-user"&gt;&lt;/i&gt; von &lt;?php echo $comment-&gt;getName();?&gt;
+&amp;nbsp;|&amp;nbsp;
+&lt;i class="icon-calendar"&gt;&lt;/i&gt; &lt;?php echo $this-&gt;date($comment-&gt;getCdate()); ?&gt;
+&lt;/small&gt;
+&lt;/blockquote&gt;
+&lt;?php endforeach; ?&gt;
+&lt;?php else: ?&gt;
+&lt;p&gt;Noch keine Kommentare vorhanden&lt;/p&gt;
+&lt;?php endif; ?&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div id="comment-form"&gt;
+&lt;h3&gt;Neuen Kommentar schreiben&lt;/h3&gt;
+&lt;p&gt;Nur der &lt;strong&gt;Name&lt;/strong&gt; wird beim Kommentar ausgegeben. 
+Die &lt;strong&gt;E-Mail-Adresse&lt;/strong&gt; wird nicht ausgegeben.&lt;/p&gt;
+&lt;br /&gt;
+&lt;?php 
+$actionUrl = $this-&gt;url('comment/action', array('action' =&gt; 'add'));
+echo $this-&gt;showForm($this-&gt;commentForm, $actionUrl, 'form-horizontal');
+?&gt;
+&lt;/div&gt;
+</pre>

@@ -1,0 +1,38 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 19
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 19.10 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 19.10');
+$this->pageTitle('Listing 19.10');
+?>
+<h3>Einbindung vom <code>CommentShowLinks</code> View-Helper</h3>
+<pre>
+[...]
+&lt;?php foreach ($this-&gt;pizzaList as $pizza) : ?&gt;
+&lt;?php
+$urlShow   = $this-&gt;url('pizza/url', array('url' =&gt; $pizza-&gt;getUrl()));
+?&gt;
+[...]
+&lt;?php if ($this-&gt;getHelperPluginManager()-&gt;has('commentShowLinks')) : ?&gt;
+&lt;?php echo $this-&gt;commentShowLinks($urlShow); ?&gt;
+&lt;?php endif; ?&gt;
+[...]
+&lt?php endforeach; ?&gt;
+[...]
+</pre>
